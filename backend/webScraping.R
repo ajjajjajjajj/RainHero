@@ -1,4 +1,5 @@
-library(cronR)
+library(magrittr)
+library(dplyr)
 library(httr)
 library(jsonlite)
 
