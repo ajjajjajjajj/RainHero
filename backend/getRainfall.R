@@ -4,7 +4,7 @@ library(httr)
 library(jsonlite)
 library(tidyr)
 
-# Credits to https://github.com/andrew-loh/neaSG/blob/master/R/get_rainfall.R
+# Inspiration from https://github.com/andrew-loh/neaSG/blob/master/R/get_rainfall.R
 get_rainfall <- function(from, to) {
   requireNamespace("magrittr")
   #Checking inputs
@@ -39,7 +39,9 @@ get_rainfall <- function(from, to) {
   
   #Binds list of daily dataframes into one
   df <- data.table::rbindlist(df_list, fill = T)
+  # Added this portion to get every 30minutes interval
   df.new <- df[seq(1, nrow(df), 6), ]
+  # Portion to remanipulate dataframe into something that's more readable
   df_long <- df %>%
     pivot_longer(
       cols = starts_with("readings."),
@@ -49,7 +51,5 @@ get_rainfall <- function(from, to) {
     select(-Reading)
   
   df_pivoted <- pivot_wider(df_long, id_cols = station_id, names_from = timestamp, values_from = value)
-  # Added this portion to get every 30minutes interval
-  # df.new <- df[seq(1, nrow(df), 6), ]
   return(df_pivoted)
 }
