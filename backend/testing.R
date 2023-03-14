@@ -39,6 +39,7 @@ get_rainfall <- function(from, to) {
   
   #Binds list of daily dataframes into one
   df <- data.table::rbindlist(df_list, fill = T)
+  df.new <- df[seq(1, nrow(df), 6), ]
   df_long <- df %>%
     pivot_longer(
       cols = starts_with("readings."),
