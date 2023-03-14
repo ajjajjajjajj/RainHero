@@ -51,5 +51,8 @@ get_rainfall <- function(from, to) {
     select(-Reading)
   
   df_pivoted <- pivot_wider(df_long, id_cols = station_id, names_from = timestamp, values_from = value)
+  df_pivoted <- as.data.frame(df_pivoted)
+  df_pivoted <- na.omit(df_pivoted)
+  df_pivoted <- df_pivoted[,-1]
   return(df_pivoted)
 }
