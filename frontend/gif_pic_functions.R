@@ -13,7 +13,7 @@ pic <- function(bot, update) {
 
 gif <- function(bot, update) {
   chat_id = update$message$chat_id
-  animation_url = ""
+  animation_url = "https://cdn.dribbble.com/users/244018/screenshots/1506924/reddit-dude.gif"
   
   bot$sendAnimation(chat_id = chat_id,
                     animation = animation_url,)
