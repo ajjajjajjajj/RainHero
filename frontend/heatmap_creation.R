@@ -12,7 +12,7 @@ library(magrittr)
 library(rgdal)
 library(raster)
 
-data <- read.csv("C:/Users/hanis/OneDrive/Desktop/Y3S2/DSA3101/dsa3101-2220-10-rain/frontend/heatmap_data.csv")
+data <- read.csv("C:/Users/Charlotte Liau/dsa3101-2220-10-rain/frontend/heatmap_data.csv")
 #View(df)
 data$X2023.01.22 = as.numeric(data$X2023.01.22)
 data[is.na(data)] <- 0
@@ -24,7 +24,7 @@ lzn.vgm <- variogram(X2023.01.22~1, data)
 lzn.fit <- fit.variogram(lzn.vgm, model=vgm(1, "Sph", 900, 1))
 
 # creating the grid 
-grid_data <- read.csv("C:/Users/hanis/OneDrive/Desktop/Y3S2/DSA3101/dsa3101-2220-10-rain/frontend/heatmap_data.csv")
+grid_data <- read.csv("C:/Users/Charlotte Liau/dsa3101-2220-10-rain/frontend/heatmap_data.csv")
 station <- data.frame(lat = grid_data$latitude, long = grid_data$longtitude, station = 1:64 )
 coordinates(station) <- ~long+ lat
 proj4string(station) <-CRS("+init=epsg:4326")
@@ -72,8 +72,9 @@ st_grid <- rasterToPoints(ras, spatial = TRUE)
 gridded(st_grid) <- TRUE
 st_grid <- as(st_grid, "SpatialPixels")
 
+# Kriging starts here 
 plot1 <- data %>% as.data.frame %>%
-  ggplot(aes(x, y)) + geom_point(size=1) + coord_equal() + 
+  ggplot(aes(latitude, longtitude)) + geom_point(size=1) + coord_equal() + 
   ggtitle("Points with measurements")
 
 # this is clearly gridded over the region of interest
@@ -83,3 +84,4 @@ plot2 <- st_grid %>% as.data.frame %>%
 
 library(gridExtra)
 grid.arrange(plot1, plot2, ncol = 2)
+
