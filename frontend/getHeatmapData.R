@@ -42,7 +42,7 @@ get_rainfall <- function(from, to) {
   # Added this portion to get every 30minutes interval
   df.new <- df[seq(1, nrow(df), 6), ]
   # Portion to remanipulate dataframe into something that's more readable
-  df_long <- df.new %>%
+  df_long <- df %>%
     pivot_longer(
       cols = starts_with("readings."),
       names_to = c("Reading", ".value"),
@@ -53,14 +53,29 @@ get_rainfall <- function(from, to) {
   df_pivoted <- pivot_wider(df_long, id_cols = station_id, names_from = timestamp, values_from = value)
   df_pivoted <- as.data.frame(df_pivoted)
   df_pivoted <- na.omit(df_pivoted)
-  df_pivoted <- as.data.frame(df_pivoted) %>%
-    pivot_longer(cols = -station_id, names_to = "timestamp", values_to = "value") %>%
-    pivot_wider(names_from = station_id, values_from = value)
-  df_pivoted <- df_pivoted %>% 
-    mutate(date = sub("\\T.*", "", timestamp), .after = timestamp) %>%
-    mutate(time = sub(".*\\T", "", timestamp), .after = date ) %>%
-    mutate(time = sub("\\+.*", "", time)) %>%
-    select(!timestamp)
+  rownames(df_pivoted) <- df_pivoted$station_id
+  df_pivoted <- df_pivoted[,-1]
   return(df_pivoted)
 }
 
+df <- get_rainfall("2023-01-22", "2023-01-23")
+View(df)
+
+weather_station <- read.csv("/Users/cynthia/Y3S2/DSA3101/dsa3101-2220-10-rain/weather_stations.csv", header = TRUE)
+names(weather_station) <- c("id", "device id", "name", "latitude", "longtitude")
+
+df_rain = df %>%
+  select("2023-01-22T07:35:00+08:00") %>%
+  rename("2023-01-22" = "2023-01-22T07:35:00+08:00")
+
+row_names = row.names(df_rain)
+
+df_rain = df_rain %>%
+  mutate(id = row_names)
+
+# generating heatmap_data
+heatmap_data = merge(df_rain, weather_station, by = "id") %>%
+  select(c('id', '2023-01-22', 'latitude', 'longtitude'))
+
+heatmap_data = data.frame(lapply(heatmap_data, as.character), stringsAsFactors = FALSE)
+write.csv(heatmap_data, "heatmap_data.csv", row.names = TRUE)
