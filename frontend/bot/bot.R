@@ -25,8 +25,8 @@ COMMAND_HELP <- 'help'
 
 # initialises and adds commands to the Updater (which creates update objects)
 updater <- Updater(token = TOKEN)
-updater <- updater + CommandHandler('start', home) +
-  CommandHandler('help', rain_help)
+updater <- updater + CommandHandler(COMMAND_START, home) +
+  CommandHandler(COMMAND_HELP, rain_help)
 
 # maps callbacks to the right function, throws an alert for invalid callbacks
 callback_query_map <- function(bot, update) {
