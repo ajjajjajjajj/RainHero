@@ -64,3 +64,7 @@ get_rainfall <- function(from, to) {
   return(df_pivoted)
 }
 
+######## test with 1 week of data ########
+#---------------------------------------#
+# test <- get_rainfall('2023-03-01', '2023-03-08') # pull one week of data
+

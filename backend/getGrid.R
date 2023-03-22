@@ -4,11 +4,11 @@ library(httr)
 library(jsonlite)
 library(tidyr)
 library(ggplot2)
-
+library(sf)
 
 # For backend visualisation purposes
-stations <- read.csv("weather_stations.csv")
-sg_poly <- readRDS("sg_poly_sf.rds")
+stations <- read.csv("./dsa3101-2220-10-rain/backend/weather_stations.csv") 
+sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
 stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
 st_crs(stations) <- 4326
 
