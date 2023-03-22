@@ -15,8 +15,10 @@ library(DT)
 
 data("world.cities")
 
-setwd("/Users/cynthia/Y3S2/DSA3101/Dataset")
-location_ws <- read.csv("weather_stations.csv")
+source(paste(getwd(), "/backend/getRainfall.R",sep=""))
+source(paste(getwd(), "/frontend/reshapeRainData.R", sep = ""))
+
+location_ws <- read.csv(paste(getwd(),"/backend/weather_stations.csv",sep=""))
 colnames(location_ws) <- c("id", "device id", "name", "latitude", "longitude")
 location_ws
 
