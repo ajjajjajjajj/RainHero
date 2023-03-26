@@ -36,7 +36,9 @@ get_nowcast_picture <- function(bot, update) {
 
 get_nowcast_gif <- function(bot, update) {
   # replace with imple
+  gif_path <- "Users/cynthia/Y3S2/DSA3101/dsa3101-2220-10-rain/frontend/bot/forecast.gif"
   bot$send_message(update$effective_chat()$id, 
+                   document = InputFile(gif_path), 
                    'get_nowcast_gif not implemented',
                    reply_markup = IKM_BACK_TO_HOME)
 }
@@ -64,10 +66,16 @@ set_new_location <- function(bot, update) {
 }
 
 find_predefined_locations <- function(bot, update) {
-  # replace with imple
+  # create InlineKeyboardMarkup template with predefined locations
+  locations <- list(
+    list(InlineKeyboardButton("Kent Ridge MRT", callback_data = "CB_FIND_LOC")),
+    list(InlineKeyboardButton("Buona Vista MRT", callback_data = "CB_FIND_LOC"))
+  )
+  ikm_locations <- InlineKeyboardMarkup(inline_keyboard = locations)
+  # send message with predefined locations template
   bot$send_message(update$effective_chat()$id, 
-                   'find_predefined_locations not implemented',
-                   reply_markup = IKM_BACK_TO_HOME)
+                   "Choose a location from the list below:",
+                   reply_markup = ikm_locations)
 }
 
 
