@@ -15,7 +15,7 @@ source('./botFunctions.R')
 
 
 # Testing Bot access token
-TOKEN <- "6283453880:AAGtUv5MlmZtbMxMZJL5HdYaD9QZv5pQ5sQ"
+TOKEN <- "5792751953:AAFLNUFHvjfGgTC0dRPZe11sfXta4KMRIk4"
 
 # Command names
 # User will use these to access the commands
@@ -44,3 +44,4 @@ updater <- updater + CallbackQueryHandler(callback_query_map)
 # function to have the bot start listening to user input. if this is not
 # run the bot does nothing
 updater$start_polling()
+

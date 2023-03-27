@@ -25,6 +25,16 @@ IKM_START_MENU <- InlineKeyboardMarkup(
                               callback_data = CB_FIND_LOC)),
     list(InlineKeyboardButton('Help', callback_data = CB_HELP))))
 
+# IKM_FAV_LOC <- InlineKeyboardMarkup(
+#   inline_keyboard = list(
+#     list(InlineKeyboardButton("Hougang",
+#                               callback_data = CB_HOUGANG)),
+#     list(InlineKeyboardButton("Serangoon",
+#                               callback_data = CB_SERANGOON)),
+#     list(InlineKeyboardButton("Punggol",
+#                               callback_data = CB_PUNGGOL))
+#   )
+# )
 
 # ----- FUNCTION DEFINITIONS -----
 get_nowcast_picture <- function(bot, update) {
@@ -36,18 +46,26 @@ get_nowcast_picture <- function(bot, update) {
 
 get_nowcast_gif <- function(bot, update) {
   # replace with imple
-  gif_path <- "Users/cynthia/Y3S2/DSA3101/dsa3101-2220-10-rain/frontend/bot/forecast.gif"
   bot$send_message(update$effective_chat()$id, 
-                   document = InputFile(gif_path), 
                    'get_nowcast_gif not implemented',
                    reply_markup = IKM_BACK_TO_HOME)
 }
 
+##### 
+df <- read.csv("/Users/cynthia/Downloads/test_fav.csv")
+locations <- as.vector(df$Amy)
+locations <- locations[which(locations!="")]
+
+locfunction <- function(vec){
+  list(InlineKeyboardButton(vec, callback_data <- str(paste0("CB_", vec))))
+}
+
 get_favourite_predictions <- function(bot, update) {
   # replace with imple
+  IKM_FAV_LOC <- InlineKeyboardMarkup(inline_keyboard = lapply(locations, locfunction))
   bot$send_message(update$effective_chat()$id, 
-                   'get_favourite_predictions not implemented',
-                   reply_markup = IKM_BACK_TO_HOME)
+                   'These are your favourite locations',
+                   reply_markup = IKM_FAV_LOC)
 }
 
 
@@ -65,13 +83,12 @@ set_new_location <- function(bot, update) {
                    reply_markup = IKM_BACK_TO_HOME)
 }
 
+# reading the dataset where it contains all the mrt station names
+stations_df <- read.csv("/Users/cynthia/Y3S2/DSA3101/practice/mrt_data.csv")
+stations = as.vector(stations_df$station_name)
+
 find_predefined_locations <- function(bot, update) {
-  # create InlineKeyboardMarkup template with predefined locations
-  locations <- list(
-    list(InlineKeyboardButton("Kent Ridge MRT", callback_data = "CB_FIND_LOC")),
-    list(InlineKeyboardButton("Buona Vista MRT", callback_data = "CB_FIND_LOC"))
-  )
-  ikm_locations <- InlineKeyboardMarkup(inline_keyboard = locations)
+  ikm_locations <- InlineKeyboardMarkup(inline_keyboard = lapply(stations, locfunction))
   # send message with predefined locations template
   bot$send_message(update$effective_chat()$id, 
                    "Choose a location from the list below:",
@@ -81,10 +98,10 @@ find_predefined_locations <- function(bot, update) {
 
 # home menu that is displayed. mapped to '/start as well (see bot.R)'
 home <- function(bot, update) {
-  text <- "hola amigo choose an option below to get started!"
+  text <- "hola amigott choose an option below to get started!"
   bot$send_message(update$effective_chat()$id, 
-                  text, 
-                  reply_markup = IKM_START_MENU)
+                   text, 
+                   reply_markup = IKM_START_MENU)
 }
 
 # help page. accessible from start menu only. contains one button to return 
@@ -94,6 +111,33 @@ rain_help <-  function(bot, update) {
   bot$send_message(update$effective_chat()$id, 
                    text, 
                    reply_markup = IKM_BACK_TO_HOME)
+}
+
+# fav location
+# output_location <- function(bot, update, location) {
+#   text <- paste("This is the output for ", location)
+#   bot$send_message(update$effective_chat()$id,
+#                    text)
+# }
+
+JURONGEAST <- function(bot, update) {
+  bot$send_message(update$effective_chat()$id, 
+                   'This is the output for Jurong East')
+}
+
+HOUGANG <- function(bot, update) {
+  bot$send_message(update$effective_chat()$id, 
+                   'This is the output for Hougang')
+}
+
+SERANGOON <- function(bot, update) {
+  bot$send_message(update$effective_chat()$id, 
+                   'This is the output for Serangoon')
+}
+
+PUNGGOL <- function(bot, update) {
+  bot$send_message(update$effective_chat()$id, 
+                   'This is the output for Punggol')
 }
 
 # ----- CALLBACK DATA MAPPINGS -----
@@ -110,13 +154,21 @@ CB_SET_NEW <- 'set_new_loc' # let's use this for custom locations (up to user)
 CB_FIND_LOC <- 'find_loc' # list current locations
 CB_HELP <- 'help'
 
+# fav locs
+CB_HOUGANG <- 'HOUGANG'
+CB_SERANGOON <- 'SERANGOON'
+CB_PUNGGOL <- 'PUNGGOL'
+
+CB_JURONGEAST <- 'JURONG_EAST'
+
 callback_keys <- c(CB_GET_PIC, CB_GET_GIF, CB_GET_FAV, 
-                   CB_SET_LOCATION, CB_SET_NEW, CB_FIND_LOC, CB_HELP, CB_HOME)
+                   CB_SET_LOCATION, CB_SET_NEW, CB_FIND_LOC, CB_HELP, CB_HOME,
+                   CB_HOUGANG, CB_SERANGOON, CB_PUNGGOL, CB_JURONGEAST)
 
 callback_functions <- c(get_nowcast_picture, get_nowcast_gif, 
                         get_favourite_predictions, set_predefined_location, 
                         set_new_location, find_predefined_locations, rain_help,
-                        home)
+                        home, HOUGANG, SERANGOON, PUNGGOL, JURONGEAST)
 
 
 # ----- CALLBACK -----
@@ -125,10 +177,15 @@ call_callback_function <- function(cb_key, bot, update) {
   do.call(callback_functions[[which(callback_keys == cb_key)]], list(bot, update))
 }
 
+# call_callback_function_loc <- function(cb_key, bot, update, locations) {
+#   do.call(callback_functions[[which(callback_keys == cb_key)]], list(bot, update))
+# }
+
 # ----- UTILITY FUNCTIONS -----
 is_valid_cb_function <- function(cb_key) {
   return(cb_key %in% callback_keys)
 }
+
 
 
 
