@@ -58,7 +58,7 @@ get_nowcast_gif <- function(bot, update) {
 }
 
 ##### 
-df <- read.csv("/Users/cynthia/Y3S2/DSA3101/practice/test_fav.csv")
+df <- read.csv("Downloads/data.csv")
 locations <- as.vector(df$Amy)
 locations <- locations[which(locations!="")]
 
@@ -119,14 +119,19 @@ rain_help <-  function(bot, update) {
                    reply_markup = IKM_BACK_TO_HOME)
 }
 
+loc_info <- function(bot, update, loc) {
+  text <- 'This is the output for ' + loc
+ 
+  bot$send_message(update$effective_chat()$id,
+                  text, reply_markup = IKM_BACK_TO_HOME)
+}
+
 JURONGEAST <- function(bot, update) {
-  bot$send_message(update$effective_chat()$id, 
-                   'This is the output for Jurong East')
+  loc_info(bot, update, 'Jurong East')
 }
 
 HOUGANG <- function(bot, update) {
-  bot$send_message(update$effective_chat()$id, 
-                   'This is the output for Hougang')
+  loc_info(bot, update, 'Hougang')
 }
 
 SERANGOON <- function(bot, update) {
