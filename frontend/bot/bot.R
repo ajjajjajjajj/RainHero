@@ -1,6 +1,8 @@
 require(telegram.bot)
 
 source('./botFunctions.R')
+source('./locationFunctions.R')
+source('./util.R')
 
 # To run the bot, select all in this file and hit run.
 # Then, open your telegram and send '/start'
@@ -15,7 +17,7 @@ source('./botFunctions.R')
 
 
 # Testing Bot access token
-TOKEN <- "5792751953:AAFLNUFHvjfGgTC0dRPZe11sfXta4KMRIk4"
+TOKEN <- "6283453880:AAGtUv5MlmZtbMxMZJL5HdYaD9QZv5pQ5sQ"
 
 # Command names
 # User will use these to access the commands
@@ -29,17 +31,39 @@ updater <- updater + CommandHandler(COMMAND_START, home) +
   CommandHandler(COMMAND_HELP, rain_help)
 
 # maps callbacks to the right function, throws an alert for invalid callbacks
-callback_query_map <- function(bot, update) {
-  data <- update$callback_query$data
-  if (is_valid_cb_function(data)) {
-    call_callback_function(data, bot, update)
+general_callback_query <- function(bot, update) {
+  callback <- parse_callback_string(update$callback_query$data)
+  id <- callback$id
+  data <- callback$data
+  
+  if (is_valid_cb_function(id, MAIN_FUNCTION_KEYS)) {
+    call_callback_function(id, MAIN_FUNCTION_KEYS, MAIN_CALLBACK_FUNCTIONS,
+                           bot, update)
   } else {
     bot$answerCallbackQuery(update$effective_chat()$id, 
-                            'callback_data doesnt map to anything',
+                            'Callback data does not map to main functions',
                             show_alert = T)
   }
 }
-updater <- updater + CallbackQueryHandler(callback_query_map)
+
+location_callback_query <- function(bot, update) {
+  callback <- parse_callback_string(update$callback_query$data)
+  id <- callback$id
+  loc <- callback$data
+  if (is_valid_cb_function(id, LOC_FUNCTION_KEYS)) {
+    call_callback_function(id, LOC_FUNCTION_KEYS, LOC_FUNCTIONS,
+                           bot, update)
+  } else {
+    bot$answerCallbackQuery(update$effective_chat()$id, 
+                            'Callback data does not map to location functions',
+                            show_alert = T)
+  }
+}
+
+updater <- updater + 
+  CallbackQueryHandler(general_callback_query, pattern="^general") +    
+  CallbackQueryHandler(location_callback_query, pattern="^location")
+
 
 # function to have the bot start listening to user input. if this is not
 # run the bot does nothing
