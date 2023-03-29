@@ -29,10 +29,13 @@ IKM_START_MENU <- InlineKeyboardMarkup(
 # ----- FUNCTION DEFINITIONS -----
 get_nowcast_picture <- function(bot, update) {
   # replace with imple
-  bot$send_message(update$effective_chat()$id, 
-                   'get_nowcast_picture not implemented',
-                   reply_markup = InlineKeyboardMarkup(
-                     inline_keyboard = BUTTON_BACK_TO_HOME))
+  chat_id = update$effective_chat()$id
+  photo_url <- "https://telegram.org/img/t_logo.png"
+  bot$sendPhoto(
+    chat_id = chat_id,
+    photo = photo_url,
+    caption = "Telegram Logo"
+  )
 }
 
 get_nowcast_gif <- function(bot, update) {
@@ -41,6 +44,16 @@ get_nowcast_gif <- function(bot, update) {
                    'get_nowcast_gif not implemented',
                    reply_markup = InlineKeyboardMarkup(
                      inline_keyboard = BUTTON_BACK_TO_HOME))
+}
+
+
+get_nowcast_gif <- function(bot, update) {
+  
+  chat_id = update$effective_chat()$id
+  animation_url = "https://cdn.dribbble.com/users/244018/screenshots/1506924/reddit-dude.gif"
+  
+  bot$sendAnimation(chat_id = chat_id,
+                    animation = animation_url,)
 }
 
 
@@ -107,7 +120,6 @@ rain_help <-  function(bot, update) {
                      inline_keyboard = BUTTON_BACK_TO_HOME))
 }
 
-
 # ----- CALLBACK DATA MAPPINGS -----
 # callback data is sent when buttons are clicked, and each of them should map
 # to a specific function
@@ -133,11 +145,3 @@ call_callback_function <- function(cb_key, relevant_keys, relevant_functions,
 is_valid_cb_function <- function(cb_key, relevant_keys) {
   return(cb_key %in% relevant_keys)
 }
-
-
-
-
-
-
-
-
