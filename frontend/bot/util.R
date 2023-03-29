@@ -50,5 +50,6 @@ CB_FIND_LOC <- 'general_find_loc' # list current locations
 CB_HELP <- 'general_help'
 
 
-
+BUTTON_BACK_TO_HOME <- list(list(
+  InlineKeyboardButton("Back to home", callback_data = GENERAL_HOME)))
 
