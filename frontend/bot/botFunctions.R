@@ -62,10 +62,12 @@ get_nowcast_gif <- function(bot, update) {
 # shows the user the list of locations they have in their favourites
 # clicking on the button leads to a page showing the prediction result
 get_favourite_predictions <- function(bot, update) {
+  reply_buttons <- append(BUTTON_BACK_TO_HOME, 
+                          IKM_FAV_LOCATIONS_AMY)
   bot$send_message(update$effective_chat()$id, 
                    'These are your favourite locations',
                    reply_markup = InlineKeyboardMarkup(
-                     inline_keyboard = BUTTON_BACK_TO_HOME))
+                     inline_keyboard = reply_buttons))
 }
 
 # shows the user the list of available locations
@@ -103,7 +105,7 @@ set_new_location <- function(bot, update) {
 
 # home menu that is displayed. mapped to '/start as well (see bot.R)'
 home <- function(bot, update) {
-  text <- "hola amigott choose an option below to get started!"
+  text <- "hola amigo choose an option below to get started!"
   bot$send_message(update$effective_chat()$id, 
                    text, 
                    reply_markup = IKM_START_MENU)
