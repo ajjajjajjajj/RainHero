@@ -158,7 +158,6 @@ grid <- as.data.frame(grid)
 
 ###### plot prediction value as heatmap over singapore ######
 #-----------------------------------------------------------#
-
 sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
 stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
 st_crs(stations) <- 4326
