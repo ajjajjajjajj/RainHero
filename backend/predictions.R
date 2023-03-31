@@ -148,6 +148,7 @@ coordinates(grid) <- ~location.longitude + location.latitude
 #-------------------------------------------------------------#
 grid_kriging_result <- krige(residuals ~ 1, forecast_data, grid, model = vgram_model_residuals)
 
+
 ###### Add the kriging predictions of the residuals to the linear regression predictions ######
 #--------------------------------------------------------------------------------------------#
 grid$regression_prediction <- predict(lm_model, newdata = grid)
