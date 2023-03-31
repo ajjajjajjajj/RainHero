@@ -121,7 +121,7 @@ user_latitude <- 1.32
 user_location <- data.frame(longitude = user_longitude, latitude = user_latitude)
 coordinates(user_location) <- ~longitude + latitude
 
-user_kriging_result <- krige(forecasted_rainfall ~ 1, forecast_data, user_location, model = vgram_model)
+user_kriging_result <- krige(forecasted_rainfall ~ 1, forecast_data, user_location, model = vgram_model_residuals)
 
 predicted_rainfall <- user_kriging_result@data$var1.pred
 predicted_rainfall
