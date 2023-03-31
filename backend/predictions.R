@@ -164,7 +164,7 @@ sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
 stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
 st_crs(stations) <- 4326
 
-grid_sf <- st_as_sf(grid, coords = c("Var2", "Var1"), crs = 4326)
+grid_sf <- st_as_sf(grid, coords = c("location.longitude", "location.latitude"), crs = 4326)
 forecast_data <- as.data.frame(forecast_data)
 ggplot(sg_poly) +
   geom_sf() +
