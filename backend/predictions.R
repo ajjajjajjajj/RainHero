@@ -142,6 +142,7 @@ colnames(grid)[1:2] <- c("location.longitude", "location.latitude")
 
 ###### Convert the grid into a spatial data frame ######
 #------------------------------------------------------#
+
 coordinates(grid) <- ~location.longitude + location.latitude
 
 ###### Perform Kriging interpolation for each grid point ######
