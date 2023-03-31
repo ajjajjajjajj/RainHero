@@ -164,7 +164,7 @@ stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitud
 st_crs(stations) <- 4326
 
 grid_sf <- st_as_sf(grid, coords = c("Var2", "Var1"), crs = 4326)
-
+forecast_data <- as.data.frame(forecast_data)
 ggplot(sg_poly) +
   geom_sf() +
   geom_density_2d_filled(data = forecast_data, 
