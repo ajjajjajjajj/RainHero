@@ -16,7 +16,6 @@ FAV_LOCATIONS_AMY <- locations[which(locations!="")]
 stations_df <- read.csv("../mrt_lrt_data.csv")
 AVAILABLE_LOCATIONS <- as.vector(stations_df$station_name)
 nsew <- c("North", "South", "East", "West")
-REG_LOC <- append(AVAILABLE_LOCATIONS, nsew)
 
 west <- stations_df[stations_df$Region == 'West', ]
 west_stations <- as.vector(west$station_name)
@@ -67,6 +66,7 @@ IKM_WEST <- make_location_ikm(west_stations)
 IKM_NORTH <- make_location_ikm(north_stations)
 IKM_SOUTH <- make_location_ikm(south_stations)
 IKM_EAST <- make_location_ikm(east_stations)
+
 # ----- LOCATION FUNCTIONS ------
 
 # replies user with list of locations from selected region
@@ -89,18 +89,7 @@ send_location <- function(bot, update) {
                        inline_keyboard = reply_buttons))
   }
 }
-    # if (region == "West"){
-    #   reply_buttons <- append(BUTTON_BACK_TO_HOME, 
-    #                           IKM_WEST)
-    #   View(reply_buttons)
-    #   bot$send_message(update$effective_chat()$id, 
-    #                    "Choose a location from West:",
-    #                    reply_markup = InlineKeyboardMarkup(
-    #                      inline_keyboard = reply_buttons))
-    # }
-    
-#   }
-# }
+   
 
 # replies the user with a prediction for an available location
 # if the location is not available, sends an error message

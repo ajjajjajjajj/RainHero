@@ -35,10 +35,6 @@ parse_callback_string <- function(callback) {
 
 # ----- CALLBACK KEYS -----
 CB_SHOW_LOCATION_PRED <- 'location_show_pred'
-# CB_NORTH <- 'region_north'
-# CB_SOUTH <- 'region_south'
-# CB_EAST <- 'region_east'
-# CB_WEST <- 'region_west'
 CB_REGIONS <- 'location_region'
 
 # ----- CALLBACK KEYS ----- 
