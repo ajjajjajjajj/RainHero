@@ -35,9 +35,11 @@ parse_callback_string <- function(callback) {
 
 # ----- CALLBACK KEYS -----
 CB_SHOW_LOCATION_PRED <- 'location_show_pred'
-
-
-
+# CB_NORTH <- 'region_north'
+# CB_SOUTH <- 'region_south'
+# CB_EAST <- 'region_east'
+# CB_WEST <- 'region_west'
+CB_REGIONS <- 'location_region'
 
 # ----- CALLBACK KEYS ----- 
 GENERAL_HOME <- 'general_home'
@@ -48,7 +50,6 @@ CB_SET_LOCATION <- 'general_set_loc' # let's use this for the pre-defined locati
 CB_SET_NEW <- 'general_set_new_loc' # let's use this for custom locations (up to user)
 CB_FIND_LOC <- 'general_find_loc' # list current locations
 CB_HELP <- 'general_help'
-
 
 BUTTON_BACK_TO_HOME <- list(list(
   InlineKeyboardButton("Back to home", callback_data = GENERAL_HOME)))
