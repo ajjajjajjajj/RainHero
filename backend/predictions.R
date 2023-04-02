@@ -36,7 +36,8 @@ stations2 <- as.data.frame(stations) %>%
 ###### load get_rainfall function from other R file ######
 #--------------------------------------------------------#
 source("./dsa3101-2220-10-rain/backend/getRainfall.R")
-test <- get_rainfall('2023-03-01', '2023-03-02') # pull 2 days of data
+test <- get_rainfall('2023-02-03', '2023-02-04')
+#test <- get_rainfall(as.character(Sys.Date() - 1), as.character(Sys.Date())) # pull 2 days of data
 
 ###### add a timestamp to the rainfall data ######
 #------------------------------------------------#
@@ -73,15 +74,26 @@ for (station_id in station_ids) { # each list in station_xts_list is the all the
 
 ###### List of lists to store the ARIMA forecasts for each station ######
 #-----------------------------------------------------------------------#
-forecast_horizon <- 1 # e.g., 1 for 30 minutes ahead
+forecast_horizon <- 96 # e.g., 1 for 30 minutes ahead
 
 station_forecasts <- list()
+
+current_time <- Sys.time() # get current time
+current_min <- format(current_time, "%M")
+current_hour <- format(current_time, "%H")
+
+if (as.numeric(current_min) >= 30) {                       #Eg. 2135Hrs --> predict for 10pm
+  current_hour <- as.numeric(current_hour) * 2 + 2
+} else {
+  current_hour <- as.numeric(current_hour) * 2 + 1         #Eg. 2125Hrs --> predict for 930pm
+}
 
 for (station_id in station_ids) { # each list in station_forecasts is the forecasted rainfall data for that weather station
   station_xts <- station_xts_list[[as.character(station_id)]]
   arima_model <- auto.arima(station_xts)
   forecast_result <- forecast(arima_model, h = forecast_horizon)
-  station_forecasts[[as.character(station_id)]] <- forecast_result$mean[1]
+  pred_at_req_time <- forecast_result$fitted[current_hour] # 18*2 + 1 = 630pm
+  station_forecasts[[as.character(station_id)]] <- pred_at_req_time # Get the predicted rainfall for 30mins from current time
 }
 
 ###### Extract the forecasted data for each weather station ######
@@ -177,7 +189,7 @@ ggplot(sg_poly) +
   labs(x = "Longitude", y = "Latitude", title = "Heatmap") +
   guides(size = FALSE) +
   labs(color = "Predicted Rainfall (mm)") +
-  scale_color_gradient2(low = "lightgrey", mid = "yellow", high = "red")
+  scale_color_gradient2(low = "lightgrey", mid = "lightblue", high = "blue")
 
 
 ###### plot prediction value as heatmap over singapore (GRIDPOINTS) ######
@@ -196,7 +208,7 @@ ggplot(sg_poly) +
   labs(x = "Longitude", y = "Latitude", title = "Heatmap") +
   guides(size = FALSE) +
   labs(color = "Predicted Rainfall (mm)") +
-  scale_color_gradient2(low = "lightgrey", mid = "yellow", high = "red")
+  scale_color_gradient2(low = "lightgrey", mid = "lightblue", high = "blue")
 
 ###### comparing predicted vs actual rainfall data ######
 #-------------------------------------------------------#
