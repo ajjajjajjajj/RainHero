@@ -156,24 +156,47 @@ grid$regression_prediction <- predict(lm_model, newdata = grid)
 grid$predicted_rainfall_residuals <- grid_kriging_result@data$var1.pred
 grid$predicted_rainfall <- grid$regression_prediction + grid$predicted_rainfall_residuals
 
+grid$predicted_rainfall[grid$predicted_rainfall < 0] <- 0
+
 grid <- as.data.frame(grid)
 
-###### plot prediction value as heatmap over singapore ######
-#-----------------------------------------------------------#
+###### plot prediction value as heatmap over singapore (STATIONS) ######
+#----------------------------------------------------------------------#
 sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
 stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
 st_crs(stations) <- 4326
 
 grid_sf <- st_as_sf(grid, coords = c("location.longitude", "location.latitude"), crs = 4326)
 forecast_data <- as.data.frame(forecast_data)
+
 ggplot(sg_poly) +
   geom_sf() +
-  geom_density_2d_filled(data = forecast_data, 
-                         mapping = aes(x = location.longitude, y = location.latitude),
-                         #contour_var = 'density',
+  geom_point(data = forecast_data, 
+                         mapping = aes(x = location.longitude, y = location.latitude, color = forecasted_rainfall, size = 3),
                          alpha = 0.6) +
-  scale_fill_brewer(palette = "Blues") +
-  theme_classic()
+  labs(x = "Longitude", y = "Latitude", title = "Heatmap") +
+  guides(size = FALSE) +
+  labs(color = "Predicted Rainfall (mm)") +
+  scale_color_gradient2(low = "lightgrey", mid = "yellow", high = "red")
+
+
+###### plot prediction value as heatmap over singapore (GRIDPOINTS) ######
+#------------------------------------------------------------------------#
+sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
+stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
+st_crs(stations) <- 4326
+
+grid_sf <- st_as_sf(grid, coords = c("location.longitude", "location.latitude"), crs = 4326)
+
+ggplot(sg_poly) +
+  geom_sf() +
+  geom_point(data = grid, 
+             mapping = aes(x = location.longitude, y = location.latitude, color = predicted_rainfall, size = 0.001),
+             alpha = 0.15) +
+  labs(x = "Longitude", y = "Latitude", title = "Heatmap") +
+  guides(size = FALSE) +
+  labs(color = "Predicted Rainfall (mm)") +
+  scale_color_gradient2(low = "lightgrey", mid = "yellow", high = "red")
 
 ###### comparing predicted vs actual rainfall data ######
 #-------------------------------------------------------#
