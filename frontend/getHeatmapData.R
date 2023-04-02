@@ -79,3 +79,14 @@ heatmap_data = merge(df_rain, weather_station, by = "id") %>%
 
 heatmap_data = data.frame(lapply(heatmap_data, as.character), stringsAsFactors = FALSE)
 write.csv(heatmap_data, "heatmap_data.csv", row.names = TRUE)
+
+library(sp)
+library(gstat)
+
+suppressPackageStartupMessages({
+  library(dplyr) # for "glimpse"
+  library(ggplot2)
+  library(scales) # for "comma"
+  library(magrittr)
+})
+
