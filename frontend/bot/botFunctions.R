@@ -30,30 +30,24 @@ IKM_START_MENU <- InlineKeyboardMarkup(
 get_nowcast_picture <- function(bot, update) {
   # replace with imple
   chat_id = update$effective_chat()$id
-  photo_url <- "https://telegram.org/img/t_logo.png"
+  photo_url <- "https://telegram.org/img/t_logo.png" # change after connecting to database
   bot$sendPhoto(
     chat_id = chat_id,
     photo = photo_url,
-    caption = "Telegram Logo"
+    reply_markup = InlineKeyboardMarkup(inline_keyboard = BUTTON_BACK_TO_HOME)
   )
 }
 
 get_nowcast_gif <- function(bot, update) {
-  # replace with imple
-  bot$send_message(update$effective_chat()$id, 
-                   'get_nowcast_gif not implemented',
-                   reply_markup = InlineKeyboardMarkup(
-                     inline_keyboard = BUTTON_BACK_TO_HOME))
-}
-
-
-get_nowcast_gif <- function(bot, update) {
   
   chat_id = update$effective_chat()$id
-  animation_url = "https://cdn.dribbble.com/users/244018/screenshots/1506924/reddit-dude.gif"
+  animation_url = "https://cdn.dribbble.com/users/244018/screenshots/1506924/reddit-dude.gif" # change after connecting to database
   
   bot$sendAnimation(chat_id = chat_id,
-                    animation = animation_url,)
+                    animation = animation_url, 
+                    reply_markup = InlineKeyboardMarkup(inline_keyboard = BUTTON_BACK_TO_HOME))
+ 
+                   
 }
 
 
