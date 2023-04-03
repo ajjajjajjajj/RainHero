@@ -23,12 +23,10 @@ TOKEN <- "6283453880:AAGtUv5MlmZtbMxMZJL5HdYaD9QZv5pQ5sQ"
 # User will use these to access the commands
 # for 'start', the user types '/start'
 COMMAND_START <- 'start'
-COMMAND_HELP <- 'help'
 
 # initialises and adds commands to the Updater (which creates update objects)
 updater <- Updater(token = TOKEN)
-updater <- updater + CommandHandler(COMMAND_START, home) +
-  CommandHandler(COMMAND_HELP, rain_help)
+updater <- updater + CommandHandler(COMMAND_START, home)
 
 # maps callbacks to the right function, throws an alert for invalid callbacks
 general_callback_query <- function(bot, update) {
