@@ -69,7 +69,6 @@ get_favourite_predictions <- function(bot, update) {
 find_predefined_locations <- function(bot, update) {
   reply_buttons <- append(BUTTON_BACK_TO_HOME, 
                           IKM_NSEW)
-  View(reply_buttons)
   bot$send_message(update$effective_chat()$id, 
                    "Choose a region:",
                    reply_markup = InlineKeyboardMarkup(
@@ -108,7 +107,6 @@ home <- function(bot, update) {
 # to start menu
 rain_help <-  function(bot, update) {
   text <- "this is the help page"
-  View(update)
   print(update$effective_chat()$id)
   bot$send_message(update$effective_chat()$id, text, 
                    reply_markup = InlineKeyboardMarkup(

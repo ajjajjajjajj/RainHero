@@ -30,6 +30,7 @@ updater <- updater + CommandHandler(COMMAND_START, home)
 
 # maps callbacks to the right function, throws an alert for invalid callbacks
 general_callback_query <- function(bot, update) {
+  print("calling general function")
   callback <- parse_callback_string(update$callback_query$data)
   id <- callback$id
   data <- callback$data
@@ -45,6 +46,7 @@ general_callback_query <- function(bot, update) {
 }
 
 location_callback_query <- function(bot, update) {
+  print("calling location function")
   callback <- parse_callback_string(update$callback_query$data)
   id <- callback$id
   loc <- callback$data
