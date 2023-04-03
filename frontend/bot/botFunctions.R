@@ -68,10 +68,10 @@ get_favourite_predictions <- function(bot, update) {
 # clicking on the button leads to a page showing the prediction result
 find_predefined_locations <- function(bot, update) {
   reply_buttons <- append(BUTTON_BACK_TO_HOME, 
-                          IKM_GET_AVAILABLE_LOCATIONS)
+                          IKM_NSEW)
   View(reply_buttons)
   bot$send_message(update$effective_chat()$id, 
-                   "Choose a location from the list below:",
+                   "Choose a region:",
                    reply_markup = InlineKeyboardMarkup(
                      inline_keyboard = reply_buttons))
 }
@@ -92,7 +92,6 @@ set_new_location <- function(bot, update) {
                    reply_markup = InlineKeyboardMarkup(
                      inline_keyboard = BUTTON_BACK_TO_HOME))
 }
-
 
 
 
