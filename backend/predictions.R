@@ -36,7 +36,7 @@ stations2 <- as.data.frame(stations) %>%
 ###### load get_rainfall function from other R file ######
 #--------------------------------------------------------#
 source("./dsa3101-2220-10-rain/backend/getRainfall.R")
-test <- get_rainfall('2023-02-03', '2023-02-04')
+test <- get_rainfall('2023-02-28', '2023-03-01')
 #test <- get_rainfall(as.character(Sys.Date() - 1), as.character(Sys.Date())) # pull 2 days of data
 
 ###### add a timestamp to the rainfall data ######
@@ -83,26 +83,44 @@ current_min <- format(current_time, "%M")
 current_hour <- format(current_time, "%H")
 
 if (as.numeric(current_min) >= 30) {                       #Eg. 2135Hrs --> predict for 10pm
-  current_hour <- as.numeric(current_hour) * 2 + 2
+  index <- as.numeric(current_hour) * 2 + 2
 } else {
-  current_hour <- as.numeric(current_hour) * 2 + 1         #Eg. 2125Hrs --> predict for 930pm
+  index <- as.numeric(current_hour) * 2 + 1         #Eg. 2125Hrs --> predict for 930pm
 }
 
 for (station_id in station_ids) { # each list in station_forecasts is the forecasted rainfall data for that weather station
   station_xts <- station_xts_list[[as.character(station_id)]]
   arima_model <- auto.arima(station_xts)
   forecast_result <- forecast(arima_model, h = forecast_horizon)
-  pred_at_req_time <- forecast_result$fitted[current_hour] # 18*2 + 1 = 630pm
-  station_forecasts[[as.character(station_id)]] <- pred_at_req_time # Get the predicted rainfall for 30mins from current time
+  
+  if (index > 1) { # get the predicted rainfall 30mins before time of interest Eg. 18*2 + 1 - 1 = 6pm
+    pred_at_req_time_2 <- forecast_result$fitted[index-1]
+  } else {
+    pred_at_req_time_2 <- forecast_result$fitted[index]
+  }
+  
+  pred_at_req_time <- forecast_result$fitted[index]     # rainfall at time of interest (30mins in the future). Eg. 18*2 + 1 = 630pm
+  mm_per_min <- (pred_at_req_time - pred_at_req_time_2) / 30        # intervals are in 30mins
+  station_forecasts[[as.character(station_id)]]$pred <- pred_at_req_time # Get the predicted rainfall for 30mins from current time
+  station_forecasts[[as.character(station_id)]]$mmPerMin <- mm_per_min
 }
 
 ###### Extract the forecasted data for each weather station ######
 #----------------------------------------------------------------#
-forecast_data <- data.frame(
-  station_id = station_ids,
-  forecasted_rainfall = as.numeric(station_forecasts)
-)
+#forecast_data <- data.frame(
+#  station_id = station_ids,
+#  forecasted_rainfall = as.numeric(station_forecasts[[1]])
+#)
+forecast_data <- do.call(rbind, lapply(station_forecasts, function(x) data.frame(t(unlist(x)))))
+forecast_data <- rownames_to_column(forecast_data, var = "station_id")
+colnames(forecast_data)[2] <- 'forecasted_rainfall'
 
+forecast_data$mmPerMin[forecast_data$mmPerMin < 0] <- 0
+
+forecast_data$category <- ifelse(forecast_data$mmPerMin == 0, "No Rain", 
+                                 ifelse(forecast_data$mmPerMin > 0 & forecast_data$mmPerMin < 0.04, "Light Rain", 
+                                        ifelse(forecast_data$mmPerMin >= 0.04 & forecast_data$mmPerMin < 0.125, "Moderate Rain", 
+                                               ifelse(forecast_data$mmPerMin >= 0.125 & forecast_data$mmPerMin < 0.83, "Heavy Rain", "Violent Rain"))))  
 ###### create spatial data from forecast_data ######
 #--------------------------------------------------#
 stations2$station_id <- as.character(stations2$station_id)
@@ -184,12 +202,12 @@ forecast_data <- as.data.frame(forecast_data)
 ggplot(sg_poly) +
   geom_sf() +
   geom_point(data = forecast_data, 
-                         mapping = aes(x = location.longitude, y = location.latitude, color = forecasted_rainfall, size = 3),
-                         alpha = 0.6) +
+             mapping = aes(x = location.longitude, y = location.latitude, color = category, size = 3),
+             alpha = 0.6) +
   labs(x = "Longitude", y = "Latitude", title = "Heatmap") +
-  guides(size = FALSE) +
-  labs(color = "Predicted Rainfall (mm)") +
-  scale_color_gradient2(low = "lightgrey", mid = "lightblue", high = "blue")
+  guides(size = 'none') +
+  labs(color = "Predicted Rainfall (mm)") 
+#scale_color_gradient2(low = "lightgrey", mid = "lightblue", high = "blue")
 
 
 ###### plot prediction value as heatmap over singapore (GRIDPOINTS) ######
@@ -203,12 +221,13 @@ grid_sf <- st_as_sf(grid, coords = c("location.longitude", "location.latitude"),
 ggplot(sg_poly) +
   geom_sf() +
   geom_point(data = grid, 
+             #mapping = aes(x = location.longitude, y = location.latitude, color = predicted_rainfall, size = 0.001),
              mapping = aes(x = location.longitude, y = location.latitude, color = predicted_rainfall, size = 0.001),
              alpha = 0.15) +
   labs(x = "Longitude", y = "Latitude", title = "Heatmap") +
   guides(size = FALSE) +
   labs(color = "Predicted Rainfall (mm)") +
-  scale_color_gradient2(low = "lightgrey", mid = "lightblue", high = "blue")
+  scale_color_gradient2(low = "lightgrey", mid = "lightblue", high = "darkblue")
 
 ###### comparing predicted vs actual rainfall data ######
 #-------------------------------------------------------#
