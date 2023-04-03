@@ -8,7 +8,7 @@ source('util.R')
 
 # ----- InlineKeyboardMarkup standard templates -----
 BUTTON_BACK_TO_HOME <- list(list(
-    InlineKeyboardButton("Back to home", callback_data = GENERAL_HOME)))
+  InlineKeyboardButton("Back to home", callback_data = GENERAL_HOME)))
 IKM_START_MENU <- InlineKeyboardMarkup(
   inline_keyboard = list(
     list(InlineKeyboardButton("Get nowcast pic", 
@@ -30,30 +30,24 @@ IKM_START_MENU <- InlineKeyboardMarkup(
 get_nowcast_picture <- function(bot, update) {
   # replace with imple
   chat_id = update$effective_chat()$id
-  photo_url <- "https://telegram.org/img/t_logo.png"
+  photo_url <- "https://telegram.org/img/t_logo.png" # change after connecting to database
   bot$sendPhoto(
     chat_id = chat_id,
     photo = photo_url,
-    caption = "Telegram Logo"
+    reply_markup = InlineKeyboardMarkup(inline_keyboard = BUTTON_BACK_TO_HOME)
   )
 }
 
 get_nowcast_gif <- function(bot, update) {
-  # replace with imple
-  bot$send_message(update$effective_chat()$id, 
-                   'get_nowcast_gif not implemented',
-                   reply_markup = InlineKeyboardMarkup(
-                     inline_keyboard = BUTTON_BACK_TO_HOME))
-}
-
-
-get_nowcast_gif <- function(bot, update) {
   
   chat_id = update$effective_chat()$id
-  animation_url = "https://cdn.dribbble.com/users/244018/screenshots/1506924/reddit-dude.gif"
+  animation_url = "https://cdn.dribbble.com/users/244018/screenshots/1506924/reddit-dude.gif" # change after connecting to database
   
   bot$sendAnimation(chat_id = chat_id,
-                    animation = animation_url,)
+                    animation = animation_url, 
+                    reply_markup = InlineKeyboardMarkup(inline_keyboard = BUTTON_BACK_TO_HOME))
+ 
+                   
 }
 
 
@@ -62,20 +56,22 @@ get_nowcast_gif <- function(bot, update) {
 # shows the user the list of locations they have in their favourites
 # clicking on the button leads to a page showing the prediction result
 get_favourite_predictions <- function(bot, update) {
+  reply_buttons <- append(BUTTON_BACK_TO_HOME, 
+                          IKM_FAV_LOCATIONS_AMY)
   bot$send_message(update$effective_chat()$id, 
                    'These are your favourite locations',
                    reply_markup = InlineKeyboardMarkup(
-                     inline_keyboard = BUTTON_BACK_TO_HOME))
+                     inline_keyboard = reply_buttons))
 }
 
 # shows the user the list of available locations
 # clicking on the button leads to a page showing the prediction result
 find_predefined_locations <- function(bot, update) {
   reply_buttons <- append(BUTTON_BACK_TO_HOME, 
-                          IKM_GET_AVAILABLE_LOCATIONS)
+                          IKM_NSEW)
   View(reply_buttons)
   bot$send_message(update$effective_chat()$id, 
-                   "Choose a location from the list below:",
+                   "Choose a region:",
                    reply_markup = InlineKeyboardMarkup(
                      inline_keyboard = reply_buttons))
 }
@@ -100,10 +96,9 @@ set_new_location <- function(bot, update) {
 
 
 
-
 # home menu that is displayed. mapped to '/start as well (see bot.R)'
 home <- function(bot, update) {
-  text <- "hola amigott choose an option below to get started!"
+  text <- "hola amigo choose an option below to get started!"
   bot$send_message(update$effective_chat()$id, 
                    text, 
                    reply_markup = IKM_START_MENU)
@@ -125,12 +120,12 @@ rain_help <-  function(bot, update) {
 # to a specific function
 
 MAIN_FUNCTION_KEYS <- c(CB_GET_PIC, CB_GET_GIF, CB_GET_FAV, 
-                   CB_SET_LOCATION, CB_SET_NEW, CB_FIND_LOC, CB_HELP, GENERAL_HOME)
+                        CB_SET_LOCATION, CB_SET_NEW, CB_FIND_LOC, CB_HELP, GENERAL_HOME)
 
 MAIN_CALLBACK_FUNCTIONS <- c(get_nowcast_picture, get_nowcast_gif, 
-                        get_favourite_predictions, set_predefined_location, 
-                        set_new_location, find_predefined_locations, rain_help,
-                        home)
+                             get_favourite_predictions, set_predefined_location, 
+                             set_new_location, find_predefined_locations, rain_help,
+                             home)
 
 
 # ----- CALLBACK -----

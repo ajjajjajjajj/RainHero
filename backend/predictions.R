@@ -3,6 +3,8 @@ install.packages("gstat")
 install.packages("forecast")
 install.packages("xts")
 install.packages("zoo")
+install.packages("rgdal")
+install.packages("rgeos")
 
 library(zoo)
 library(sp)
@@ -14,6 +16,8 @@ library(tidyverse)
 library(forecast)
 library(classInt)
 library(RColorBrewer)
+library(rgdal)
+library(rgeos)
 
 ###### get weather stations code, long, lat ######
 #------------------------------------------------#
@@ -94,11 +98,19 @@ forecast_data$station_id <- as.character(forecast_data$station_id)
 forecast_data <- merge(forecast_data, stations2, by = "station_id", all.x=TRUE)
 coordinates(forecast_data) <- ~location.longitude + location.latitude
 
+###### Fit a linear regression model using longitude and latitude as covariates ######
+#------------------------------------------------------------------------------------#
+lm_model <- lm(forecasted_rainfall ~ location.longitude + location.latitude, data = forecast_data)
+
+###### Calculate the residuals of the linear regression model ######
+#------------------------------------------------------------------#
+forecast_data$residuals <- residuals(lm_model)
+
 ###### Create and fit a variogram model ######
 #--------------------------------------------#
-vgram <- variogram(forecasted_rainfall ~ 1, forecast_data)
+vgram_residuals <- variogram(residuals ~ 1, forecast_data)
 
-vgram_model <- fit.variogram(vgram, model = vgm("Sph"))
+vgram_model_residuals <- fit.variogram(vgram_residuals, model = vgm("Sph"))
 
 ###### Perform Kriging interpolation for the user's location ######
 #-----------------------------------------------------------------#
@@ -109,18 +121,13 @@ user_latitude <- 1.32
 user_location <- data.frame(longitude = user_longitude, latitude = user_latitude)
 coordinates(user_location) <- ~longitude + latitude
 
-user_kriging_result <- krige(forecasted_rainfall ~ 1, forecast_data, user_location, model = vgram_model)
+user_kriging_result <- krige(forecasted_rainfall ~ 1, forecast_data, user_location, model = vgram_model_residuals)
 
 predicted_rainfall <- user_kriging_result@data$var1.pred
 predicted_rainfall
 
-###### plot prediction value as heatmap over singapore ######
-#-----------------------------------------------------------#
-
-sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
-stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
-st_crs(stations) <- 4326
-
+###### Perform Kriging interpolation for the grid points ######
+#-----------------------------------------------------------------#
 max_v_point <- 1.470783
 min_v_point <- 1.158762
 max_h_point <- 104.0885
@@ -128,9 +135,37 @@ min_h_point <- 103.6057
 
 grid_h_points <- seq(min_h_point, max_h_point, length.out=50)
 grid_v_points <- seq(min_v_point, max_v_point, length.out=50)
-grid <- expand.grid(grid_v_points, grid_h_points)
-grid_sf <- st_as_sf(grid, coords = c("Var2", "Var1"), crs = 4326)
+grid <- expand.grid(longitude = grid_h_points, latitude = grid_v_points)
 
+# Rename the columns in the grid data frame to match those in the forecast_data data frame
+colnames(grid)[1:2] <- c("location.longitude", "location.latitude")
+
+###### Convert the grid into a spatial data frame ######
+#------------------------------------------------------#
+
+coordinates(grid) <- ~location.longitude + location.latitude
+
+###### Perform Kriging interpolation for each grid point ######
+#-------------------------------------------------------------#
+grid_kriging_result <- krige(residuals ~ 1, forecast_data, grid, model = vgram_model_residuals)
+
+
+###### Add the kriging predictions of the residuals to the linear regression predictions ######
+#--------------------------------------------------------------------------------------------#
+grid$regression_prediction <- predict(lm_model, newdata = grid)
+grid$predicted_rainfall_residuals <- grid_kriging_result@data$var1.pred
+grid$predicted_rainfall <- grid$regression_prediction + grid$predicted_rainfall_residuals
+
+grid <- as.data.frame(grid)
+
+###### plot prediction value as heatmap over singapore ######
+#-----------------------------------------------------------#
+sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
+stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
+st_crs(stations) <- 4326
+
+grid_sf <- st_as_sf(grid, coords = c("location.longitude", "location.latitude"), crs = 4326)
+forecast_data <- as.data.frame(forecast_data)
 ggplot(sg_poly) +
   geom_sf() +
   geom_density_2d_filled(data = forecast_data, 
