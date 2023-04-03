@@ -26,11 +26,11 @@ COMMAND_START <- 'start'
 
 # initialises and adds commands to the Updater (which creates update objects)
 updater <- Updater(token = TOKEN)
-updater <- updater + CommandHandler(COMMAND_START, home)
+updater <- updater + CommandHandler(COMMAND_START, start_home)
 
 # maps callbacks to the right function, throws an alert for invalid callbacks
 general_callback_query <- function(bot, update) {
-  print("calling general function")
+  View(update$effective_user())
   callback <- parse_callback_string(update$callback_query$data)
   id <- callback$id
   data <- callback$data
@@ -46,7 +46,6 @@ general_callback_query <- function(bot, update) {
 }
 
 location_callback_query <- function(bot, update) {
-  print("calling location function")
   callback <- parse_callback_string(update$callback_query$data)
   id <- callback$id
   loc <- callback$data
@@ -67,5 +66,8 @@ updater <- updater +
 
 # function to have the bot start listening to user input. if this is not
 # run the bot does nothing
+print("Starting bot session...")
 updater$start_polling()
+
+
 

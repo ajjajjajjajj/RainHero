@@ -93,11 +93,23 @@ set_new_location <- function(bot, update) {
 }
 
 
+# home display for start of session. NOT a callback function.
+start_home <- function(bot, update) {
+  print(paste("Chat session started with", update$effective_user()$first_name,
+              ", username:", update$effective_user()$username))
+  text <- "Hohoho! I am RainHero and today I am here to save you from the rain!
+  \nView 30-minute predictions for rain across locations in Singapore!
+  \nSelect one of the options below to get started."
+  bot$send_message(update$effective_chat()$id, 
+                   text, 
+                   reply_markup = IKM_START_MENU)
+}
 
 
-# home menu that is displayed. mapped to '/start as well (see bot.R)'
+
+# displays the home menu.
 home <- function(bot, update) {
-  text <- "hola amigo choose an option below to get started!"
+  text <- "Select among the options below to find rain predictions."
   bot$send_message(update$effective_chat()$id, 
                    text, 
                    reply_markup = IKM_START_MENU)

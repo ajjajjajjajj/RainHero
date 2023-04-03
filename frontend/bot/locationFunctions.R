@@ -6,14 +6,14 @@ source('util.R')
 
 # ----- IMPORT SAMPLE FAV LOCS -----
 # replace this part with connection to SQL database
-df <- read.csv("../test_fav.csv") 
+df <- read.csv("./resources/test_fav.csv") 
 locations <- as.vector(df$Amy)
 FAV_LOCATIONS_AMY <- locations[which(locations!="")]
 
 
 
 # ----- IMPORT mrt/lrt data -----
-stations_df <- read.csv("../mrt_lrt_data.csv")
+stations_df <- read.csv("./resources/mrt_lrt_data.csv")
 AVAILABLE_LOCATIONS <- as.vector(stations_df$station_name)
 nsew <- c("North", "South", "East", "West")
 
