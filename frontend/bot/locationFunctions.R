@@ -46,6 +46,15 @@ make_region_ikm <- function(regions) {
                 USE.NAMES = F, simplify = F))
 }
 
+# returns the long-lat of an available location
+get_location_long_lat <- function(location) {
+  if (!is_location_available(location)) {
+    return(list())
+  } 
+  station_info <- stations_df[which(stations_df$station_name == location),]
+  return(list(longitude=station_info$lng, latitude=station_info$lat))
+}
+
 # returns true if given location is available
 is_location_available <- function(location) {
   return(location %in% AVAILABLE_LOCATIONS)
