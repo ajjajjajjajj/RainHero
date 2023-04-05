@@ -6,14 +6,14 @@ source('util.R')
 
 # ----- IMPORT SAMPLE FAV LOCS -----
 # replace this part with connection to SQL database
-df <- read.csv("../test_fav.csv") 
+df <- read.csv("./resources/test_fav.csv") 
 locations <- as.vector(df$Amy)
 FAV_LOCATIONS_AMY <- locations[which(locations!="")]
 
 
 
 # ----- IMPORT mrt/lrt data -----
-stations_df <- read.csv("../mrt_lrt_data.csv")
+stations_df <- read.csv("./resources/mrt_lrt_data.csv")
 AVAILABLE_LOCATIONS <- as.vector(stations_df$station_name)
 nsew <- c("North", "South", "East", "West")
 
@@ -44,6 +44,15 @@ make_location_ikm <- function(locations) {
 make_region_ikm <- function(regions) {
   return(sapply(regions, make_location_button, CB_REGIONS, 
                 USE.NAMES = F, simplify = F))
+}
+
+# returns the long-lat of an available location
+get_location_long_lat <- function(location) {
+  if (!is_location_available(location)) {
+    return(list())
+  } 
+  station_info <- stations_df[which(stations_df$station_name == location),]
+  return(list(longitude=station_info$lng, latitude=station_info$lat))
 }
 
 # returns true if given location is available
@@ -82,7 +91,6 @@ send_location <- function(bot, update) {
     ikm_function <- eval(parse(text = paste0("IKM_", toupper(region))))
     reply_buttons <- append(BUTTON_BACK_TO_HOME, 
                             ikm_function)
-    View(reply_buttons)
     bot$send_message(update$effective_chat()$id,
                      paste0("Choose a location from ", region),
                      reply_markup = InlineKeyboardMarkup(
