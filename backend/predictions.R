@@ -21,7 +21,7 @@ library(rgeos)
 
 ###### get weather stations code, long, lat ######
 #------------------------------------------------#
-stations <- read.csv("./dsa3101-2220-10-rain/backend/weather_stations.csv")
+stations <- read.csv("./resources/weather_stations.csv")
 
 # copy 1 of station data
 stations1 <- as.data.frame(stations) %>% 
@@ -35,7 +35,7 @@ stations2 <- as.data.frame(stations) %>%
 
 ###### load get_rainfall function from other R file ######
 #--------------------------------------------------------#
-source("./dsa3101-2220-10-rain/backend/getRainfall.R")
+source("getRainfall.R")
 test <- get_rainfall('2023-02-28', '2023-03-01')
 #test <- get_rainfall(as.character(Sys.Date() - 1), as.character(Sys.Date())) # pull 2 days of data
 
@@ -148,14 +148,16 @@ vgram_model_residuals <- fit.variogram(vgram_residuals, model = vgm("Sph"))
 user_longitude <- 103.75
 user_latitude <- 1.32
 
-user_location <- data.frame(longitude = user_longitude, latitude = user_latitude)
-coordinates(user_location) <- ~longitude + latitude
+user_location <- data.frame(location.longitude = user_longitude, location.latitude = user_latitude)
+coordinates(user_location) <- ~location.longitude + location.latitude
 
 user_kriging_result <- krige(forecasted_rainfall ~ 1, forecast_data, user_location, model = vgram_model_residuals)
+# Calculate the linear regression predictions for the user's location
+user_lm_prediction <- predict(lm_model, newdata = user_location)
 
-predicted_rainfall <- user_kriging_result@data$var1.pred
+# Add the kriging predictions of the residuals to the linear regression predictions
+predicted_rainfall <- user_lm_prediction + user_kriging_result@data$var1.pred
 predicted_rainfall
-
 ###### Perform Kriging interpolation for the grid points ######
 #-----------------------------------------------------------------#
 max_v_point <- 1.470783
@@ -188,11 +190,9 @@ grid$predicted_rainfall <- grid$regression_prediction + grid$predicted_rainfall_
 
 grid$predicted_rainfall[grid$predicted_rainfall < 0] <- 0
 
-grid <- as.data.frame(grid)
-
 ###### plot prediction value as heatmap over singapore (STATIONS) ######
 #----------------------------------------------------------------------#
-sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
+sg_poly <- readRDS("./resources/sg_poly_sf.rds")
 stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
 st_crs(stations) <- 4326
 
@@ -212,12 +212,12 @@ ggplot(sg_poly) +
 
 ###### plot prediction value as heatmap over singapore (GRIDPOINTS) ######
 #------------------------------------------------------------------------#
-sg_poly <- readRDS("./dsa3101-2220-10-rain/backend/sg_poly_sf.rds")
+sg_poly <- readRDS("./resources/sg_poly_sf.rds")
 stations <- st_as_sf(stations , coords=c("location.longitude", "location.latitude"))
 st_crs(stations) <- 4326
 
 grid_sf <- st_as_sf(grid, coords = c("location.longitude", "location.latitude"), crs = 4326)
-
+grid <- as.data.frame(grid)
 ggplot(sg_poly) +
   geom_sf() +
   geom_point(data = grid, 
