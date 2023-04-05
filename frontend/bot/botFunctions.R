@@ -100,7 +100,7 @@ find_predefined_locations <- function(bot, update) {
 
 # home display for start of session. NOT a callback function.
 start_home <- function(bot, update) {
-  photo <- "logo.jpeg"
+  photo <- "./resources/logo.jpeg"
   text <- sprintf("What's up %s! I am RainHero and today I am here to save you from the rain! 🌧😎
   \nView 30-minute predictions for rain across locations in Singapore! 🗺
   \nSelect one of the options below to get started. ⬇️", update$effective_chat()$first_name)
