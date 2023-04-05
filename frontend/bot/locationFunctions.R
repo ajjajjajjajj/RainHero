@@ -89,8 +89,8 @@ send_location <- function(bot, update) {
                        inline_keyboard = BUTTON_BACK_TO_HOME))
   } else {
     ikm_function <- eval(parse(text = paste0("IKM_", toupper(region))))
-    reply_buttons <- append(BUTTON_BACK_TO_HOME, 
-                            ikm_function)
+    reply_buttons <- append(ikm_function,
+                            BUTTON_BACK_TO_HOME)
     bot$send_message(update$effective_chat()$id,
                      paste0("Choose a location from ", region),
                      reply_markup = InlineKeyboardMarkup(
