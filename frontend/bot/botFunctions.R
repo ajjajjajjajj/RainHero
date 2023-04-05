@@ -131,7 +131,8 @@ rain_help <-  function(bot, update) {
   \nGet nowcast gif: presents you with an GIF of the overall rain prediction of Singapore in the next 30 minutes 🗺🎥
   \nView predictions for favorite locations: allows you to easily check rain prediction of your favourite specific location 🗺📍
   \nSet favourite from available locations: allows you to add in your new favourite location ⭐️
-  \nView predictions for available locations: allows you to check your rain prediction at the specific location in Singapore 😊 "
+  \nView predictions for available locations: allows you to check your rain prediction at the specific location in Singapore 😊
+  \nRain intensity: light rain:0-0.04 mm/min, moderate rain: 0.04-0.125 mm/min, heavy rain: 0.125-0.83 mm/min, violent rain: more than 0.83 mm/min"
   
   bot$send_message(update$effective_chat()$id, 
                    text, 
