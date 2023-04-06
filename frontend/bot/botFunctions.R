@@ -103,12 +103,10 @@ find_predefined_locations <- function(bot, update) {
 
 # home display for start of session. NOT a callback function.
 start_home <- function(bot, update) {
-  print(paste("Chat session started with", update$effective_user()$first_name,
-              ", username:", update$effective_user()$username))
-  photo <- "logo.jpeg"
-  text <- "Whats up Whats up! I am RainHero and today I am here to save you from the rain! 🌧😎
+  photo <- "./resources/logo.jpeg"
+  text <- sprintf("What's up %s! I am RainHero and today I am here to save you from the rain! 🌧😎
   \nView 30-minute predictions for rain across locations in Singapore! 🗺
-  \nSelect one of the options below to get started. ⬇️"
+  \nSelect one of the options below to get started. ⬇️", update$effective_chat()$first_name)
   
   bot$sendPhoto(update$effective_chat()$id, 
                    photo = photo, 
@@ -120,7 +118,6 @@ start_home <- function(bot, update) {
 # displays the home menu.
 home <- function(bot, update) {
   text <- "Select among the options below to find rain predictions. ⬇️"
-  
   bot$send_message(update$effective_chat()$id, 
                    text, 
                    reply_markup = IKM_START_MENU)
@@ -128,16 +125,18 @@ home <- function(bot, update) {
 
 # help page. accessible from start menu only. contains one button to return 
 # to start menu
+
 rain_help <-  function(bot, update) {
   text <- "Here is your help page for our buttons!
-  \nGet nowcast pic: presents you with an image of the overall rain prediction of Singapore in the next 30 minutes 🗺📸
-  \nGet nowcast gif: presents you with an GIF of the overall rain prediction of Singapore in the next 30 minutes 🗺🎥
-  \nView predictions for favorite locations: allows you to easily check rain prediction of your favourite specific location 🗺📍
-  \nSet favourite from available locations: allows you to add in your new favourite location ⭐️
-  \nView predictions for available locations: allows you to check your rain prediction at the specific location in Singapore 😊 "
-  
+  \n 🗺📸 *Get nowcast pic*: presents you with an image of the overall rain prediction of Singapore in the next 30 minutes
+  \n 🗺🎥 *Get nowcast gif*: presents you with an GIF of the overall rain prediction of Singapore in the next 30 minutes
+  \n 🗺📍 *View predictions for favorite locations*: allows you to easily check rain prediction of your favourite specific location
+  \n ⭐️ *Set favourite from available locations*: allows you to add in your new favourite location
+  \n 😊 *View predictions for available locations*: allows you to check your rain prediction at the specific location in Singapore
+  \n 💧 *Rain intensity*: light rain:_0-0.04 mm/min_, moderate rain: _0.04-0.125 mm/min_, heavy rain: _0.125-0.83 mm/min_, violent rain: _more than 0.83 mm/min_"
   bot$send_message(update$effective_chat()$id, 
                    text, 
+                   parse_mode = "Markdown",
                    reply_markup = InlineKeyboardMarkup(
                      inline_keyboard = BUTTON_BACK_TO_HOME))
 }

@@ -104,6 +104,12 @@ send_location <- function(bot, update) {
 }
    
 
+add_prediction_to_format <- function(location, prediction){
+  sprintf("*PREDICTION RESULTS*
+  Location: %s
+  30-minute Prediction: %s", location, prediction)
+}
+
 # replies the user with a prediction for an available location
 # if the location is not available, sends an error message
 # expects data in the following format:
@@ -113,15 +119,16 @@ send_location_prediction <- function(bot, update) {
   location <- parsed_cb_data$data[1]
   long <- parsed_cb_data$data[2]
   lat <- parsed_cb_data$data[3]
-  text <- paste("This is the output for",
-                location, "long:", long, "lat:", lat)
+  
+  text <- add_prediction_to_format(location, "light rain")
+  text <- paste(text, "\nlong:", long, "lat:", lat)
   bot$send_message(update$effective_chat()$id,
                     text, 
-                   reply_markup = InlineKeyboardMarkup(
-                     inline_keyboard = BUTTON_BACK_TO_HOME))# to replace text with a template
+                    parse_mode = "Markdown",
+                    reply_markup = InlineKeyboardMarkup(
+                        inline_keyboard = BUTTON_BACK_TO_HOME))# to replace text with a template
 
 }
-
 
 # returns a list of buttons representing each search hit for the location search
 # each button contains a callback string in the following format

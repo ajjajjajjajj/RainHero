@@ -18,6 +18,7 @@ forecast_data <- get_forecast_data()
 vgram_model_residuals <- LR_variogram()
 
 # user_longitude and user_latitude given by the telegram bot
+#* @get /forecast_user_location
 forecast_user_location <- function(user_longitude, user_latitude) {
   user_longitude <- as.numeric(user_longitude)
   user_latitude <- as.numeric(user_latitude)
