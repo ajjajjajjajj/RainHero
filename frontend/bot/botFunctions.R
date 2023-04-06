@@ -77,10 +77,13 @@ set_predefined_location <- function(bot, update) {
                      inline_keyboard = BUTTON_BACK_TO_HOME))
 }
 
+
 set_new_location <- function(bot, update) {
-  # replace with imple
+  text <- "Using the /location command, reply in your next text a location that you would like to find.
+      \nAcceptable formats include postal codes, building names and street names."
+
   bot$send_message(update$effective_chat()$id, 
-                   'set_new_location not implemented',
+                   text,
                    reply_markup = InlineKeyboardMarkup(
                      inline_keyboard = BUTTON_BACK_TO_HOME))
 }
