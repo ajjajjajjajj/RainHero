@@ -60,8 +60,10 @@ location_callback_query <- function(bot, update) {
 
 updater <- updater + 
   CallbackQueryHandler(general_callback_query, pattern="^general") +    
-  CallbackQueryHandler(location_callback_query, pattern="^location")
+  CallbackQueryHandler(location_callback_query, pattern="^loc")
 
+COMMAND_SET_NEW_LOC <- 'location'
+updater <- updater + CommandHandler(COMMAND_SET_NEW_LOC, handle_location_input)
 
 # function to have the bot start listening to user input. if this is not
 # run the bot does nothing

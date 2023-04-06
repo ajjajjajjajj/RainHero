@@ -34,8 +34,8 @@ parse_callback_string <- function(callback) {
 
 
 # ----- CALLBACK KEYS -----
-CB_SHOW_LOCATION_PRED <- 'location_show_pred'
-CB_REGIONS <- 'location_region'
+CB_SHOW_LOCATION_PRED <- 'loc_pred'
+CB_REGIONS <- 'loc_region'
 
 # ----- CALLBACK KEYS ----- 
 GENERAL_HOME <- 'general_home'
