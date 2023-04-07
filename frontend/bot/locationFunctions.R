@@ -103,6 +103,13 @@ send_location <- function(bot, update) {
   }
 }
    
+# zooming into a specified location 
+zoom_in <- function(long, lat) {
+  pic <- leaflet() %>% addTiles() %>%
+    addMarkers(lng= long, lat=lat, popup = "Location selected") %>%
+    setView(lng= long, lat=lat, zoom = 20)
+  # need to create rastarlayer to have the heat map effect 
+}
 
 add_prediction_to_format <- function(location, prediction){
   text <- "*PREDICTION RESULTS*"
