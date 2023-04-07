@@ -28,6 +28,7 @@ IKM_START_MENU <- InlineKeyboardMarkup(
 
 
 # ----- FUNCTION DEFINITIONS -----
+# shows user a picture of the rain forecast over the whole of Singapore 
 get_nowcast_picture <- function(bot, update) {
   # replace with imple
   chat_id = update$effective_chat()$id
@@ -41,7 +42,7 @@ get_nowcast_picture <- function(bot, update) {
     reply_markup = InlineKeyboardMarkup(inline_keyboard = BUTTON_BACK_TO_HOME)
   )
 }
-
+# shows user a gif of the rain forecast over the whole of Singapore 
 get_nowcast_gif <- function(bot, update) {
   
   chat_id = update$effective_chat()$id
@@ -61,7 +62,7 @@ get_nowcast_gif <- function(bot, update) {
 get_favourite_predictions <- function(bot, update) {
   reply_buttons <- append(IKM_FAV_LOCATIONS_AMY,
                           BUTTON_BACK_TO_HOME)
-  text <- "Here are your favourite locations! Don't get caught in the rain! 😎"
+  text <- "Here are your favourite locations! Click on a location to see its rain prediction. 😎"
   
   bot$send_message(update$effective_chat()$id, 
                    text,
@@ -79,8 +80,9 @@ set_predefined_location <- function(bot, update) {
 
 
 set_new_location <- function(bot, update) {
-  text <- "Using the /location command, reply in your next text a location that you would like to find.
-      \nAcceptable formats include postal codes, building names and street names."
+  text <- "Send a text with /location in front of the location you would like to find to RainHero.
+      \nAcceptable formats include postal codes, building names and street names.
+      \nExample: /location 540101"
 
   bot$send_message(update$effective_chat()$id, 
                    text,
