@@ -70,6 +70,7 @@ get_favourite_predictions <- function(bot, update) {
                      inline_keyboard = reply_buttons))
 }
 
+# set favourites from available location 
 set_predefined_location <- function(bot, update) {
   # replace with imple
   bot$send_message(update$effective_chat()$id, 
@@ -134,6 +135,7 @@ rain_help <-  function(bot, update) {
   \n 🗺🎥 *Get nowcast gif*: presents you with an GIF of the overall rain prediction of Singapore in the next 30 minutes
   \n 🗺📍 *View predictions for favorite locations*: allows you to easily check rain prediction of your favourite specific location
   \n ⭐️ *Set favourite from available locations*: allows you to add in your new favourite location
+  \n 📍 *Enter new location*: allows you to search rain prediction of a location that is not in our list of available locations
   \n 😊 *View predictions for available locations*: allows you to check your rain prediction at the specific location in Singapore
   \n 💧 *Rain intensity*: light rain:_0-0.04 mm/min_, moderate rain: _0.04-0.125 mm/min_, heavy rain: _0.125-0.83 mm/min_, violent rain: _more than 0.83 mm/min_"
   bot$send_message(update$effective_chat()$id, 

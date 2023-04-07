@@ -105,9 +105,8 @@ send_location <- function(bot, update) {
    
 
 add_prediction_to_format <- function(location, prediction){
-  sprintf("*PREDICTION RESULTS*
-  Location: %s
-  30-minute Prediction: %s", location, prediction)
+  text <- "*PREDICTION RESULTS*"
+  text <- paste(text, "\nLocation:", location, "\n30-minute Prediction:", prediction)
 }
 
 # replies the user with a prediction for an available location
@@ -120,7 +119,7 @@ send_location_prediction <- function(bot, update) {
   long <- parsed_cb_data$data[2]
   lat <- parsed_cb_data$data[3]
   
-  text <- add_prediction_to_format(location, "light rain")
+  text <- add_prediction_to_format(location, "light rain") #replace "light rain" with prediction 
   text <- paste(text, "\nlong:", long, "lat:", lat)
   bot$send_message(update$effective_chat()$id,
                     text, 
