@@ -246,4 +246,7 @@ mae <- mean(abs(as.numeric(actual$S94) - actual$predicted_vals))
 # Compute the Root Mean Squared Error (RMSE)
 rmse <- sqrt(mean((as.numeric(actual$S94) - actual$predicted_vals)^2))
 
-plot(x = c(actual$ID, actual$ID), y = c(actual$S94, actual$predicted_vals), col = c('blue', 'red'), pch = 20)
+plot(x = c(actual$ID, actual$ID), y = c(actual$S94, actual$predicted_vals), col = c('blue', 'red'), pch = 20,
+     main = "Actual vs. Predicted Rainfall",
+     xlab = "Time Index",
+     ylab = "Rainfall Intensity (mm)")
