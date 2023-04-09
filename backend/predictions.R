@@ -232,6 +232,7 @@ ggplot(sg_poly) +
 ###### comparing predicted vs actual rainfall data ######
 #-------------------------------------------------------#
 # from above, data was from 2023-03-01 to 2023-03-02 so predicted is from 2023-03-03 to 2023-03-04
+
 pred_vals <- forecast_result$fitted
 actual <- get_rainfall("2023-03-03", "2023-03-04")
 actual <- actual %>%
@@ -239,5 +240,10 @@ actual <- actual %>%
   mutate(predicted_vals = pred_vals) %>%
   mutate(ID = seq(1, dim(actual)[1], 1))
 
-plot(x = c(actual$ID, actual$ID), y = c(actual$S94, actual$predicted_vals), col = c('blue', 'red'), pch = 20)
+# Compute the Mean Absolute Error (MAE)
+mae <- mean(abs(as.numeric(actual$S94) - actual$predicted_vals))
 
+# Compute the Root Mean Squared Error (RMSE)
+rmse <- sqrt(mean((as.numeric(actual$S94) - actual$predicted_vals)^2))
+
+plot(x = c(actual$ID, actual$ID), y = c(actual$S94, actual$predicted_vals), col = c('blue', 'red'), pch = 20)
