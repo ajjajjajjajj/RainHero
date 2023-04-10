@@ -40,9 +40,3 @@ forecast_user_location <- function(user_longitude, user_latitude) {
   
   return(result)
 }
-
-# test funciton
-#* @get /test
-test <- function() {
-  return("API WORKS krigingUser.R")
-}
