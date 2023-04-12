@@ -108,6 +108,6 @@ LR_variogram <- function(user_longitude, user_latitude) { # returns vgram_model_
   return(list(grid = grid, result = result))
 }
 
-output <- LR_variogram()
-grid <- output$grid
-result <- output$result
+#output <- LR_variogram()
+#grid <- output$grid
+#result <- output$result
