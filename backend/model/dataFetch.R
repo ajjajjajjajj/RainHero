@@ -14,6 +14,6 @@ require(rgeos)
 fetch_data_from_db <- function() {
   # code to connect to database and fetch data
   # ...
-  data <- "fetched_data" # placeholder for the fetched data
+  data <- read.table("./resources/placeholder_data.csv") # placeholder for the fetched data
   return(data)
 }

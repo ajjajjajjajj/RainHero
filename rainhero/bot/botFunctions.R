@@ -35,7 +35,7 @@ get_nowcast_picture <- function(bot, update) {
   
   bot$sendPhoto(
     chat_id = chat_id,
-    photo = "./resources/placeholder_map.png",
+    photo = "https://i.pinimg.com/originals/bb/47/98/bb4798145e6c1fdbb65e22c098692cb5.png",
     text, 
     reply_markup = InlineKeyboardMarkup(inline_keyboard = BUTTON_BACK_TO_HOME)
   )
@@ -44,7 +44,7 @@ get_nowcast_picture <- function(bot, update) {
 get_nowcast_gif <- function(bot, update) {
   
   chat_id = update$effective_chat()$id
-  animation_url = "https://cdn.dribbble.com/users/244018/screenshots/1506924/reddit-dude.gif" 
+  animation_url = "https://media1.giphy.com/media/De9fGBMyClmJUxr6uR/200w_s.gif" 
   text <- "Here you go! This is the overall rain prediction of Singapore 🌧"
   
   bot$sendAnimation(

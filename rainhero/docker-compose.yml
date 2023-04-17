@@ -1,10 +1,10 @@
 services:
   bot:
     build: ./bot
-    container_name: rainhero_bot
+    container_name: rainhero-bot
 
   model:
     build: ./model
     ports: 
       - "8000:8000"
-    container_name: rainhero_model
+    container_name: rainhero-model

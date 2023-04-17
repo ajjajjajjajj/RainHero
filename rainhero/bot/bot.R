@@ -17,7 +17,7 @@ source('./util.R')
 
 
 # Testing Bot access token
-TOKEN <- "6283453880:AAGtUv5MlmZtbMxMZJL5HdYaD9QZv5pQ5sQ"
+TOKEN <- "6026465051:AAHsW0tDtcze1VDbLJY80J87mum7WWpqe_Y"
 
 # Command names
 # User will use these to access the commands
