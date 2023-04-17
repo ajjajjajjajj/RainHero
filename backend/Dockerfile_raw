@@ -1,0 +1,11 @@
+FROM rocker/r-base:latest
+
+WORKDIR /docker
+
+COPY . .
+
+RUN Rscript install_packages.R
+RUN Rscript getRainfall.R
+
+ENTRYPOINT ["Rscript", "install_packages.R"]
+ENTRYPOINT ["Rscript", "getRainfall.R"]

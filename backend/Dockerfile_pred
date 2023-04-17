@@ -1,0 +1,13 @@
+FROM rocker/r-base:latest
+
+WORKDIR /docker
+
+COPY . .
+
+RUN Rscript getGrid.R
+RUN Rscript plotWeatherStations.R
+RUN Rscript predictions.R
+
+ENTRYPOINT ["Rscript", "getGrid.R"]
+ENTRYPOINT ["Rscript", "plotWeatherStations.R"]
+ENTRYPOINT ["Rscript", "predictions.R"]

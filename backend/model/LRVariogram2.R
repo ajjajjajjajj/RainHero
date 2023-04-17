@@ -17,7 +17,7 @@ source("./forecastData.R")
 stations2 <- loadStation2()
 forecast_data <- get_forecast_data()
 
-LR_variogram <- function() { # returns vgram_model_residuals for kriging function
+LR_variogram <- function(user_longitude, user_latitude) { # returns vgram_model_residuals for kriging function
   ###### create spatial data from forecast_data ######
   #--------------------------------------------------#
   stations2$station_id <- as.character(stations2$station_id)
@@ -108,6 +108,6 @@ LR_variogram <- function() { # returns vgram_model_residuals for kriging functio
   return(list(grid = grid, result = result))
 }
 
-output <- LR_variogram()
-grid <- output$grid
-result <- output$result
+#output <- LR_variogram()
+#grid <- output$grid
+#result <- output$result
